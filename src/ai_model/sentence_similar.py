@@ -33,6 +33,20 @@ class SentenceSimilar:
 
         return similar_dto(most_similar_question_idx, most_similar_question, similarity_score)
 
+    def check_all(self, input, questions):
+        input_embedding = self.model.encode(input)
+        question_embeddings = self.model.encode(questions)
+
+        similarities = util.pytorch_cos_sim(input_embedding, question_embeddings)
+
+        similarities_list = similarities[0].tolist()
+
+        result = list(map(lambda x: similar_dto(x[0], x[1], similarities_list[x[0]]), enumerate(questions)))
+
+        return result
+
+
+
     def _is_model_local_exist(self):
         required_files = [
             'config.json',
